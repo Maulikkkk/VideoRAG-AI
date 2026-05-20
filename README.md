@@ -225,12 +225,12 @@ App opens at `http://localhost:8501`
 
 ## Demo
 
-(https://github.com/user-attachments/assets/f66b6f48-3e70-4383-ad2f-d26806627612)
-
----
+![Demo](https://github.com/user-attachments/assets/f66b6f48-3e70-4383-ad2f-d26806627612)
 
 
 <div align="center">
+
+---
 
 Built by **Maulik Gupta** · AI/ML Engineer · RAG & LLM Enthusiast
 
