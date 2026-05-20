@@ -1,21 +1,6 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-<img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
-<img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white"/>
-<img src="https://img.shields.io/badge/Mistral_AI-F7931E?style=for-the-badge&logo=mistral&logoColor=white"/>
-<img src="https://img.shields.io/badge/License-MIT-22d3ee?style=for-the-badge"/>
-
-<br/><br/>
-
-```
-██╗   ██╗██╗██████╗ ███████╗ ██████╗ ██████╗  █████╗  ██████╗      █████╗ ██╗
-██║   ██║██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝     ██╔══██╗██║
-██║   ██║██║██║  ██║█████╗  ██║   ██║██████╔╝███████║██║  ███╗    ███████║██║
-╚██╗ ██╔╝██║██║  ██║██╔══╝  ██║   ██║██╔══██╗██╔══██║██║   ██║    ██╔══██║██║
- ╚████╔╝ ██║██████╔╝███████╗╚██████╔╝██║  ██║██║  ██║╚██████╔╝    ██║  ██║██║
-  ╚═══╝  ╚═╝╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝     ╚═╝  ╚═╝╚═╝
-```
+# 🎬 VideoRAG-AI
 
 ### AI-Powered Video Understanding & Conversational RAG
 
@@ -23,15 +8,21 @@
 
 <br/>
 
-[**View Demo**](#-demo) · [**Quick Start**](#-installation) · [**Architecture**](#️-architecture) · [**Features**](#-features)
+<img src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white"/>
+<img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white"/>
+<img src="https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logo=langchain&logoColor=white"/>
+<img src="https://img.shields.io/badge/Mistral_AI-F7931E?style=flat-square&logo=mistral&logoColor=white"/>
+<img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square"/>
 
-<br/>
+<br/><br/>
+
+[**View Demo**](#demo) · [**Quick Start**](#installation) · [**Architecture**](#architecture) · [**Features**](#features)
 
 </div>
 
 ---
 
-## 🧠 What is VideoRAG-AI?
+## What is VideoRAG-AI?
 
 VideoRAG-AI is an end-to-end AI assistant that turns any video — YouTube, meeting recording, podcast, or lecture — into a fully searchable, conversational knowledge base.
 
@@ -42,66 +33,60 @@ YouTube URL  ──→  Audio  ──→  Transcript  ──→  Summary + Actio
                                     ↓
                               Vector Store
                                     ↓
-                           Chat with your video 💬
+                           Chat with your video
 ```
 
 ---
 
-## ✨ Features
+## Features
 
 | Capability | Details |
 |---|---|
-| 📥 **Multi-Source Input** | YouTube URLs, local MP4/audio files, meeting recordings |
-| 🗣️ **Multilingual ASR** | English via Whisper · Hindi/Hinglish via Sarvam AI |
-| 📋 **AI Summarization** | Map-reduce pipeline for long-form content |
-| ✅ **Action Item Extraction** | Automatically surface tasks from any meeting |
-| 🔑 **Key Decision Detection** | Identify what was decided, without re-watching |
-| ❓ **Open Question Mining** | Flag unresolved items from conversations |
-| 🔍 **Semantic RAG Search** | ChromaDB + HuggingFace embeddings + Mistral LLM |
-| 💬 **Conversational Chat** | Full chat UI to interrogate any video transcript |
+| **Multi-Source Input** | YouTube URLs, local MP4/audio files, meeting recordings |
+| **Multilingual ASR** | English via Whisper · Hindi/Hinglish via Sarvam AI |
+| **AI Summarization** | Map-reduce pipeline for long-form content |
+| **Action Item Extraction** | Automatically surface tasks from any meeting |
+| **Key Decision Detection** | Identify what was decided, without re-watching |
+| **Open Question Mining** | Flag unresolved items from conversations |
+| **Semantic RAG Search** | ChromaDB + HuggingFace embeddings + Mistral LLM |
+| **Conversational Chat** | Full chat UI to interrogate any video transcript |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        VideoRAG-AI Pipeline                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   Video URL / File                                               │
-│         │                                                        │
-│         ▼                                                        │
-│   ┌─────────────┐    ┌──────────────┐    ┌───────────────────┐  │
-│   │ Audio       │───▶│ Chunking     │───▶│ Speech-to-Text    │  │
-│   │ Extraction  │    │ (pydub)      │    │ Whisper / Sarvam  │  │
-│   │ (yt-dlp)    │    └──────────────┘    └────────┬──────────┘  │
-│   └─────────────┘                                 │             │
-│                                                   ▼             │
-│                                         Full Transcript         │
-│                                                   │             │
-│                          ┌────────────────────────┤             │
-│                          │                        │             │
-│                          ▼                        ▼             │
-│                  ┌───────────────┐      ┌──────────────────┐   │
-│                  │ AI Analysis   │      │ Vector Pipeline  │   │
-│                  │ • Summary     │      │ • Text Chunks    │   │
-│                  │ • Actions     │      │ • Embeddings     │   │
-│                  │ • Decisions   │      │ • ChromaDB Store │   │
-│                  │ • Questions   │      └────────┬─────────┘   │
-│                  └───────────────┘               │             │
-│                                                  ▼             │
-│                                          RAG Retriever          │
-│                                                  │             │
-│                                                  ▼             │
-│                                       Mistral LLM Response      │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+Video URL / File
+      │
+      ▼
+┌─────────────┐    ┌──────────────┐    ┌───────────────────┐
+│ Audio       │───▶│ Chunking     │───▶│ Speech-to-Text    │
+│ Extraction  │    │ (pydub)      │    │ Whisper / Sarvam  │
+│ (yt-dlp)    │    └──────────────┘    └────────┬──────────┘
+└─────────────┘                                 │
+                                                ▼
+                                      Full Transcript
+                                                │
+                         ┌──────────────────────┤
+                         │                      │
+                         ▼                      ▼
+                 ┌───────────────┐    ┌──────────────────┐
+                 │ AI Analysis   │    │ Vector Pipeline  │
+                 │ · Summary     │    │ · Text Chunks    │
+                 │ · Actions     │    │ · Embeddings     │
+                 │ · Decisions   │    │ · ChromaDB       │
+                 │ · Questions   │    └────────┬─────────┘
+                 └───────────────┘             │
+                                               ▼
+                                        RAG Retriever
+                                               │
+                                               ▼
+                                    Mistral LLM Response
 ```
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 <table>
 <tr>
@@ -110,7 +95,7 @@ YouTube URL  ──→  Audio  ──→  Transcript  ──→  Summary + Actio
 **AI / LLM**
 - Mistral AI
 - LangChain
-- RAG (Retrieval-Augmented Generation)
+- Retrieval-Augmented Generation
 
 **Speech-to-Text**
 - OpenAI Whisper *(English)*
@@ -138,17 +123,13 @@ YouTube URL  ──→  Audio  ──→  Transcript  ──→  Summary + Actio
 **Backend**
 - Python 3.11
 
-**Environment**
-- python-dotenv
-- Virtual environment
-
 </td>
 </tr>
 </table>
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 VideoRAG-AI/
@@ -173,16 +154,16 @@ VideoRAG-AI/
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### 1. Clone
+**1. Clone**
 
 ```bash
 git clone https://github.com/Maulikkkk/VideoRAG-AI.git
 cd VideoRAG-AI
 ```
 
-### 2. Create virtual environment
+**2. Create virtual environment**
 
 ```bash
 python -m venv .venv
@@ -190,13 +171,13 @@ source .venv/bin/activate        # macOS/Linux
 # .venv\Scripts\activate         # Windows
 ```
 
-### 3. Install dependencies
+**3. Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
+**4. Configure environment variables**
 
 Create a `.env` file in the project root:
 
@@ -209,7 +190,7 @@ SARVAM_STT_MODEL=saaras:v2.5
 
 > Get your Mistral key at [console.mistral.ai](https://console.mistral.ai) · Sarvam key at [sarvam.ai](https://sarvam.ai)
 
-### 5. Run
+**5. Run**
 
 ```bash
 streamlit run app.py
@@ -219,17 +200,17 @@ App opens at `http://localhost:8501`
 
 ---
 
-## 💬 Usage
+## Usage
 
 1. Paste a **YouTube URL** or local file path into the sidebar
 2. Select **language** (English or Hinglish)
 3. Hit **Run Analysis** and watch the pipeline execute live
-4. Review the **summary, action items, decisions, and open questions**
+4. Review the summary, action items, decisions, and open questions
 5. Use the **chat interface** to ask anything about the video
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] Streaming LLM responses
 - [ ] Speaker diarization (who said what)
@@ -242,19 +223,19 @@ App opens at `http://localhost:8501`
 
 ---
 
-## 📸 Demo
+## Demo
 
-> *Screenshots and demo GIF coming soon.*
+*Screenshots and demo GIF coming soon.*
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome. Open an issue first to discuss what you'd like to change.
 
 ---
 
-## 📜 License
+## License
 
 [MIT](LICENSE)
 
