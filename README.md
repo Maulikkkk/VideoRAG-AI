@@ -229,17 +229,6 @@ App opens at `http://localhost:8501`
 
 ---
 
-## Contributing
-
-Contributions are welcome. Open an issue first to discuss what you'd like to change.
-
----
-
-## License
-
-[MIT](LICENSE)
-
----
 
 <div align="center">
 
