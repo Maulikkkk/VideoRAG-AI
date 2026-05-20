@@ -196,7 +196,7 @@ SARVAM_STT_MODEL=saaras:v2.5
 streamlit run app.py
 ```
 
-App opens at `http://localhost:8501`
+App opens at `(https://videorag-ai.streamlit.app/)`
 
 ---
 
