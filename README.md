@@ -24,12 +24,12 @@
 
 ## What is VideoRAG-AI?
 
-VideoRAG-AI is an end-to-end AI assistant that turns any video — YouTube, meeting recording, podcast, or lecture — into a fully searchable, conversational knowledge base.
+VideoRAG-AI is an end-to-end AI assistant that turns any video like YouTube, meeting recording, podcast, or lectu, into a fully searchable, conversational knowledge base.
 
 No more scrubbing through hours of content. Ask questions, get answers, grounded in what was actually said.
 
 ```
-YouTube URL  ──→  Audio  ──→  Transcript  ──→  Summary + Action Items
+Video URL  ──→  Audio  ──→  Transcript  ──→  Summary + Action Items
                                     ↓
                               Vector Store
                                     ↓
