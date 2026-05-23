@@ -13,19 +13,36 @@ def download_youtube_audio(url: str) -> str:
 
     output_path = os.path.join(DOWNLOAD_DIR,"%(title)s.%(ext)s")
     ydl_opts = {
-        "format": "bestaudio/best",
-        "outtmpl": output_path,
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "wav", #<----
-                "preferredquality": "192",
-            }
-        ],
-        "quiet": True,
-    }
+    "format": "bestaudio/best",
+    "outtmpl": output_path,
+
+    "quiet": True,
+    "noplaylist": True,
+
+    "extractor_args": {
+        "youtube": {
+            "player_client": ["android"]
+        }
+    },
+
+    "http_headers": {
+        "User-Agent": "Mozilla/5.0"
+    },
+
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "wav",
+            "preferredquality": "192",  
+        }
+    ],
+}
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
+        try:
+            info = ydl.extract_info(url, download=True)
+        except Exception as e:
+            print(f"Download failed: {e}")
+            raise Exception("Could not download YouTube video.")
         filename = ydl.prepare_filename(info).replace(".webm", ".wav").replace(".m4a", ".wav")
     return filename
 
