@@ -19,11 +19,11 @@ def download_youtube_audio(url: str) -> str:
     "quiet": True,
     "noplaylist": True,
 
-    "extractor_args": {
-        "youtube": {
-            "player_client": ["android"]
-        }
-    },
+   "extractor_args": {
+    "youtube": {
+        "player_client": ["web"]
+    }
+},
 
     "http_headers": {
         "User-Agent": "Mozilla/5.0"
