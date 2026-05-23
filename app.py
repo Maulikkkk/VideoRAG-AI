@@ -238,6 +238,39 @@ h1, h2, h3, h4, h5, h6 {
     50%       { opacity: 0.4; }
 }
 
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 4px;
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid var(--border);
+}
+.stTabs [data-baseweb="tab"] {
+    background: transparent;
+    border-radius: 6px;
+    color: var(--text-muted) !important;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 1rem;
+    border: none !important;
+}
+.stTabs [aria-selected="true"] {
+    background: rgba(124,58,237,0.25) !important;
+    color: var(--accent-glow) !important;
+}
+.stTabs [data-baseweb="tab-highlight"] { display: none; }
+.stTabs [data-baseweb="tab-border"]    { display: none; }
+.stTabs [data-baseweb="tab-panel"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0 8px 8px 8px;
+    padding: 1rem 1.25rem;
+    margin-top: -4px;
+}
+
 /* ── Chat ── */
 .chat-container {
     background: var(--surface);
@@ -353,18 +386,18 @@ with st.sidebar:
 
     run_btn = st.button("⚡  Analyse", use_container_width=True)
 
-    if st.session_state.pipeline_done:
-        st.markdown("---")
-        st.markdown('<span class="badge badge-green">Pipeline Status</span>', unsafe_allow_html=True)
-        for step, icon, label in [
-            ("audio",      "🔊", "Audio Processing"),
-            ("transcript", "📝", "Transcription"),
-            ("title",      "🏷️", "Title Generation"),
-            ("summary",    "📋", "Summarisation"),
-            ("extract",    "🔍", "Extraction"),
-            ("rag",        "🧠", "RAG Engine"),
-        ]:
-            render_step_bar(label, step, icon)
+    st.markdown("---")
+    # ── FIX: always show pipeline steps, not just after pipeline_done ──
+    st.markdown('<span class="badge badge-green">Pipeline Status</span>', unsafe_allow_html=True)
+    for step, icon, label in [
+        ("audio",      "🔊", "Audio Processing"),
+        ("transcript", "📝", "Transcription"),
+        ("title",      "🏷️",  "Title Generation"),
+        ("summary",    "📋", "Summarisation"),
+        ("extract",    "🔍", "Extraction"),
+        ("rag",        "🧠", "RAG Engine"),
+    ]:
+        render_step_bar(label, step, icon)
 
 # ─── Main Area ──────────────────────────────────────────────────────────────────
 st.markdown('<div class="hero-title">VideoRAG AI</div>', unsafe_allow_html=True)
@@ -388,7 +421,7 @@ if run_btn:
 
         try:
             with progress_placeholder.container():
-                st.info("⚙️ Pipeline running — see sidebar for live status…")
+                st.info("⚙️ Pipeline running — watch the sidebar for live status…")
 
             update_step("audio", "active")
             chunks = process_input(source)
@@ -464,29 +497,27 @@ if st.session_state.result:
         with st.expander("📝 Full Transcript", expanded=False):
             st.markdown(f'<div class="transcript-box">{r["transcript"]}</div>', unsafe_allow_html=True)
 
-    # Second row: action items | decisions | questions
-    c1, c2, c3 = st.columns(3, gap="medium")
+    # ── FIX: compact tabs instead of 3 tall columns ──────────────────────────
+    tab1, tab2, tab3 = st.tabs(["✅ Action Items", "🔑 Key Decisions", "❓ Open Questions"])
 
-    with c1:
-        st.markdown(f"""
-        <div class="card">
-            <div class="card-title">✅ Action Items</div>
-            <div class="card-content">{r['action_items']}</div>
-        </div>""", unsafe_allow_html=True)
+    with tab1:
+        st.markdown(
+            f'<div class="card-content">{r["action_items"]}</div>',
+            unsafe_allow_html=True
+        )
 
-    with c2:
-        st.markdown(f"""
-        <div class="card">
-            <div class="card-title">🔑 Key Decisions</div>
-            <div class="card-content">{r['key_decisions']}</div>
-        </div>""", unsafe_allow_html=True)
+    with tab2:
+        st.markdown(
+            f'<div class="card-content">{r["key_decisions"]}</div>',
+            unsafe_allow_html=True
+        )
 
-    with c3:
-        st.markdown(f"""
-        <div class="card">
-            <div class="card-title">❓ Open Questions</div>
-            <div class="card-content">{r['open_questions']}</div>
-        </div>""", unsafe_allow_html=True)
+    with tab3:
+        st.markdown(
+            f'<div class="card-content">{r["open_questions"]}</div>',
+            unsafe_allow_html=True
+        )
+    # ── end tabs ──────────────────────────────────────────────────────────────
 
     st.markdown("---")
 

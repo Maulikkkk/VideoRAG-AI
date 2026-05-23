@@ -2,42 +2,14 @@ import yt_dlp
 from pydub import AudioSegment
 import os
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))
-)
-DOWNLOAD_DIR = os.path.join(BASE_DIR, "downloads")
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+DOWNLOAD_DIR = 'downloades'
+os.makedirs(DOWNLOAD_DIR,exist_ok = True)
 
-COOKIES_FILE = os.path.join(BASE_DIR, "cookies.txt")  # optional but recommended
-
-
-def download_youtube_audio(url: str) -> str:
+def download_youtube_audio(url :str) ->str:
     output_path = os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s")
-
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
-        "quiet": True,
-        "noplaylist": True,
-
-        # ✅ FIX 1: Use tv_embedded + ios instead of "web" (avoids bot detection)
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["tv_embedded", "ios", "mweb"]
-            }
-        },
-
-        # ✅ FIX 2: Use a mobile User-Agent (less flagged than desktop)
-        "http_headers": {
-            "User-Agent": (
-                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
-                "AppleWebKit/605.1.15 (KHTML, like Gecko) "
-                "Version/17.0 Mobile/15E148 Safari/604.1"
-            ),
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -45,60 +17,39 @@ def download_youtube_audio(url: str) -> str:
                 "preferredquality": "192",
             }
         ],
+        "quiet": True,
     }
-
-    # ✅ FIX 3: Use cookies if available (most reliable bypass for deployed apps)
-    if os.path.exists(COOKIES_FILE):
-        ydl_opts["cookiefile"] = COOKIES_FILE
-
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            info = ydl.extract_info(url, download=True)
-        except yt_dlp.utils.DownloadError as e:
-            error_msg = str(e)
-            if "Sign in" in error_msg or "bot" in error_msg.lower():
-                raise Exception(
-                    "YouTube blocked this request (bot detection). "
-                    "Please add a cookies.txt file to bypass this."
-                )
-            raise Exception(f"Could not download YouTube video: {error_msg}")
-        except Exception as e:
-            raise Exception(f"Could not download YouTube video: {str(e)}")
-
-        filename = (
-            ydl.prepare_filename(info)
-            .replace(".webm", ".wav")
-            .replace(".m4a", ".wav")
-            .replace(".opus", ".wav")
-            .replace(".mp4", ".wav")  # ✅ FIX 4: handle more extensions
-        )
-
+        info = ydl.extract_info(url, download=True)
+        filename = ydl.prepare_filename(info).replace(".webm", ".wav").replace(".m4a", ".wav")
     return filename
+
 
 
 def convert_to_wav(input_path: str) -> str:
     """Convert any audio/video file to WAV format using pydub."""
     output_path = os.path.splitext(input_path)[0] + "_converted.wav"
     audio = AudioSegment.from_file(input_path)
-    audio = audio.set_channels(1).set_frame_rate(16000)  # 16kHz mono
+    audio = audio.set_channels(1).set_frame_rate(16000) #16khz
     audio.export(output_path, format="wav")
     return output_path
 
 
-def chunk_audio(wav_path: str, chunk_minutes: int = 10) -> list:
-    """Split WAV file into chunks of chunk_minutes length."""
+
+def chunk_audio(wav_path : str , chunk_minutes : int = 10) -> list:
     audio = AudioSegment.from_wav(wav_path)
-    chunk_ms = chunk_minutes * 60 * 1000
+    chunk_ms = chunk_minutes * 60 * 1000 
 
     chunks = []
-    for i, start in enumerate(range(0, len(audio), chunk_ms)):
-        chunk = audio[start: start + chunk_ms]
+
+    for i, start in enumerate(range(0,len(audio),chunk_ms)):
+        chunk = audio[start : start + chunk_ms]
         chunk_path = f"{wav_path}_chunk_{i}.wav"
-        chunk.export(chunk_path, format="wav")
+        chunk.export(chunk_path , format = "wav")
+
         chunks.append(chunk_path)
-
+    
     return chunks
-
 
 def process_input(source: str) -> list:
     if source.startswith("http://") or source.startswith("https://"):
